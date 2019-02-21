@@ -10,6 +10,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ import unitec.models.CryptInfo;
 import unitec.services.CryptService;
 
 @RestController
+@PreAuthorize("hasAuthority('USER')")
 @RequestMapping("/")
 public class CryptController {
 	@Autowired
