@@ -34,6 +34,6 @@ public class CryptServiceImpl implements CryptService {
 		String encMsg = ImageCreator.retrieveText(decImg),
 				decMsg = CryptUNITEC.decrypt(encMsg, key);
 		
-		return new CryptInfo(key, decMsg, image);
+		return new CryptInfo(null, decMsg, null);
 	}
 }
