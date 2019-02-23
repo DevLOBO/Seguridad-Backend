@@ -25,7 +25,7 @@ public class CryptServiceImpl implements CryptService {
 				encImg = ImageCreator.hideText(img, encMsg);
 		encMsg = ImageCreator.encodeImg(encImg);
 		
-		return new CryptInfo(key, msg, encMsg);
+		return new CryptInfo(key, null, encMsg);
 	}
 
 	@Override

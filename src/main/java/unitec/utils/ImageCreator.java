@@ -13,7 +13,7 @@ import org.springframework.util.Base64Utils;
 public class ImageCreator {
 	public static byte[] createImageRandom() throws IOException {
 		SecureRandom rand = new SecureRandom();
-		int w = 1000, h = 1000;
+		int w = 50, h = 50;
 		BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 		
 		for (int y = 0; y < h; y++)
