@@ -16,11 +16,11 @@ public class JWTUtils {
 				.sign(Algorithm.HMAC512(SecurityConstants.SECRET.getBytes()));
 	}
 	
-	public static String createWithKeyAndExpirationTime(String name, String value, Long time) {
+	public static String createWithKeyAndExpirationTime(String name, String value, Date date) {
 		return JWT.create()
 				.withSubject(name)
 				.withClaim("key", value)
-				.withExpiresAt(new Date(System.currentTimeMillis() + time))
+				.withExpiresAt(date)
 				.sign(Algorithm.HMAC512(SecurityConstants.SECRET.getBytes()));
 	}
 	

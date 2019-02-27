@@ -27,12 +27,12 @@ public class CryptController {
 	CryptService cs;
 	
 	@PostMapping("/encrypt")
-	public CryptInfo encryptMessage(@RequestBody String msg) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, IOException {
-		return cs.encryptMsg(msg);
+	public CryptInfo encryptMessage(@RequestBody CryptInfo cryptInfo) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, IOException {
+		return cs.encryptMsg(cryptInfo);
 	}
 	
 	@PostMapping("/decrypt")
 	public CryptInfo decryptMessage(@RequestBody CryptInfo cryptInfo) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException, IOException {
-		return cs.decryptMsg(cryptInfo.getKey(), cryptInfo.getImage());
+		return cs.decryptMsg(cryptInfo);
 	}
 }

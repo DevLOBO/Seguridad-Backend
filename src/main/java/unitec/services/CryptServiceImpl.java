@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -19,24 +20,26 @@ import unitec.utils.JWTUtils;
 @Service
 public class CryptServiceImpl implements CryptService {
 	@Override
-	public CryptInfo encryptMsg(String msg) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, IOException {
+	public CryptInfo encryptMsg(CryptInfo cryptInfo) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, IOException {
+		Date date = new Date(System.currentTimeMillis()  + (cryptInfo.getTime() * 60000));
 		String key = CryptUNITEC.generateKey(),
-				encMsg = CryptUNITEC.encrypt(msg, key),
-				token = JWTUtils.createWithKeyAndExpirationTime("", key, 10000L);
+				encMsg = CryptUNITEC.encrypt(cryptInfo.getMessage(), key),
+				token = JWTUtils.createWithKeyAndExpirationTime(cryptInfo.getUsername(), key, date);
 		byte[] img = ImageCreator.createImageRandom(),
 				encImg = ImageCreator.hideText(img, encMsg);
 		encMsg = ImageCreator.encodeImg(encImg);
 		
-		return new CryptInfo(token, null, encMsg, null);
+		return CryptInfo.builder().key(token).image(encMsg).date(date).build();
 	}
 
 	@Override
-	public CryptInfo decryptMsg(String token, String image) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException, IOException {
-		byte[] decImg = ImageCreator.decodeImg(image);
-		String key = JWTUtils.getKey(token),
+	public CryptInfo decryptMsg(CryptInfo cryptInfo) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException, IOException {
+		byte[] decImg = ImageCreator.decodeImg(cryptInfo.getImage());
+		String key = JWTUtils.getKey(cryptInfo.getKey()),
 				encMsg = ImageCreator.retrieveText(decImg),
-				decMsg = CryptUNITEC.decrypt(encMsg, key);
+				decMsg = CryptUNITEC.decrypt(encMsg, key),
+				user = JWTUtils.getSubject(cryptInfo.getKey());
 		
-		return new CryptInfo(null, decMsg, null, null);
+		return CryptInfo.builder().message(decMsg).username(user).build();
 	}
 }
