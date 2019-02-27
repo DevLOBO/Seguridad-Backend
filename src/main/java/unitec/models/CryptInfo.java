@@ -15,4 +15,5 @@ public class CryptInfo {
 	private String key;
 	private String message;
 	private String image;
+	private String username;
 }

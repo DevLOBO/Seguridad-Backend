@@ -14,9 +14,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
+import unitec.utils.JWTUtils;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 	public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
@@ -40,11 +38,8 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 	private UsernamePasswordAuthenticationToken getAuth(HttpServletRequest request) {
 		String token = request.getHeader(SecurityConstants.HEADER_STRING);
 		
-		if (!token.equals(null)) {
-			DecodedJWT jwt = JWT.require(Algorithm.HMAC512(SecurityConstants.SECRET.getBytes())).build()
-					.verify(token.replace(SecurityConstants.TOKEN_PREFIX, ""));
-
-			String username = jwt.getSubject();
+		if (token != null) {
+			String username = JWTUtils.getSubject(token);
 			
 			if (username != null)
 				return new UsernamePasswordAuthenticationToken(username, null, Arrays.asList(new SimpleGrantedAuthority("USER")));

@@ -23,8 +23,33 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+
 @RestControllerAdvice
 public class HandlerExceptions extends ResponseEntityExceptionHandler {
+	@ExceptionHandler(JWTCreationException.class)
+	public ResponseEntity<CustomError> handleJWTCreationException(JWTCreationException jce, WebRequest request) {
+		CustomError error = new CustomError(HttpStatus.INTERNAL_SERVER_ERROR, jce.getLocalizedMessage(),
+				request.getDescription(false));
+		return new ResponseEntity<CustomError>(error, error.getStatus());
+	}
+	
+	@ExceptionHandler(JWTDecodeException.class)
+	public ResponseEntity<CustomError> handleJWTDecodeException(JWTDecodeException jde, WebRequest request) {
+		CustomError error = new CustomError(HttpStatus.INTERNAL_SERVER_ERROR, jde.getLocalizedMessage(),
+				request.getDescription(false));
+		return new ResponseEntity<CustomError>(error, error.getStatus());
+	}
+	
+	@ExceptionHandler(JWTVerificationException.class)
+	public ResponseEntity<CustomError> handleJWTVerificationException(JWTVerificationException jve, WebRequest request) {
+		CustomError error = new CustomError(HttpStatus.UNAUTHORIZED, jve.getLocalizedMessage(),
+				jve.getMessage());
+		return new ResponseEntity<CustomError>(error, error.getStatus());
+	}
+	
 	@ExceptionHandler(InvalidKeyException.class)
 	public ResponseEntity<CustomError> handleInvalidKeyException(InvalidKeyException ike, WebRequest request) {
 		CustomError error = new CustomError(HttpStatus.BAD_REQUEST, ike.getLocalizedMessage(),

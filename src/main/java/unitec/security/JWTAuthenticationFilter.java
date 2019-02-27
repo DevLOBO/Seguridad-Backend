@@ -15,11 +15,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import unitec.models.User;
+import unitec.utils.JWTUtils;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 	private AuthenticationManager authManager;
@@ -54,11 +53,9 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication authResult) throws IOException, ServletException {
-		String username = authResult.getName();
-		String token = JWT.create()
-				.withSubject(username)
-				.withClaim("roles", new ObjectMapper().writeValueAsString(authResult.getAuthorities()))
-				.sign(Algorithm.HMAC512(SecurityConstants.SECRET.getBytes()));
+		String username = authResult.getName(),
+				roles = new ObjectMapper().writeValueAsString(authResult.getAuthorities()),
+				token = JWTUtils.createWithClaimAndExpirationTime(username, "roles", roles);
 		
 		Map<String, Object> res = new HashMap<>();
 		res.put("username", username);

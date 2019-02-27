@@ -14,6 +14,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.util.Base64Utils;
 
+import unitec.security.SecurityConstants;
+
 public class CryptUNITEC {
 	public static String generateKey() {
 		try {
@@ -26,7 +28,7 @@ public class CryptUNITEC {
 	}
 	
 	public static String encrypt(String text, String key) throws IllegalBlockSizeException, BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException {
-		Cipher ecipher = Cipher.getInstance("DES");
+		Cipher ecipher = Cipher.getInstance(SecurityConstants.CRYPT_ALGORITHM);
 		ecipher.init(Cipher.ENCRYPT_MODE, buildKey(key));
 		
 		byte[] enc = ecipher.doFinal(text.getBytes());
@@ -35,7 +37,7 @@ public class CryptUNITEC {
 	}
 	
 	public static String decrypt(String enc, String key) throws IllegalBlockSizeException, BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException {
-		Cipher dcipher = Cipher.getInstance("DES");
+		Cipher dcipher = Cipher.getInstance(SecurityConstants.CRYPT_ALGORITHM);
 		dcipher.init(Cipher.DECRYPT_MODE, buildKey(key));
 		
 		byte[] base64 = Base64Utils.decode(enc.getBytes()),
@@ -46,6 +48,6 @@ public class CryptUNITEC {
 	
 	private static SecretKey buildKey(String key) {
 		byte[] bytes = Base64Utils.decodeFromString(key);
-		return new SecretKeySpec(bytes, "DES");
+		return new SecretKeySpec(bytes, SecurityConstants.CRYPT_ALGORITHM);
 	}
 }
