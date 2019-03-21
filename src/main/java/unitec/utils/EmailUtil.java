@@ -1,49 +1,37 @@
 package unitec.utils;
 
-import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-
-@NoArgsConstructor
-@ToString
-@EqualsAndHashCode
 public class EmailUtil {
-	@Autowired
-	JavaMailSenderImpl sender;
+	private JavaMailSenderImpl sender;
+	
+	public EmailUtil(JavaMailSenderImpl sender) {
+		this.sender = sender;
+	}
 	
 	public void sendEmailWithAttachment(String to, byte[] img, String key, Date date) throws AddressException, MessagingException, UnsupportedEncodingException {
-		InputStreamResource isr = new InputStreamResource(new ByteArrayInputStream(img));
-		System.out.println("Variable exitosa");
-		
 		MimeMessage message = sender.createMimeMessage();
-		System.out.println("Mime exitoso");
 		
 		MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 		helper.setTo(to);
 		helper.setSubject("Mensaje encriptado");
 		helper.setText(buildText(key, date), true);
 		helper.setFrom("franco.hernandezh@my.unitec.edu.mx");
-		helper.addAttachment("encrypted.png", isr);
-		System.out.println("Helper exitoso");
+		helper.addAttachment("encrypted.png", new ByteArrayResource(img));
 		
 		sender.send(message);
 	}
 	
-	public String buildText(String key, Date date) {
+	private static String buildText(String key, Date date) {
 		String t = "<!DOCTYPE html>\r\n" + 
 				"<html lang=\"es\">\r\n" + 
 				"\r\n" + 
@@ -63,7 +51,7 @@ public class EmailUtil {
 				"		 <li>Fecha de expiración: " + date.toString() + "</li></ul>" + 
 				"        <p>Para poder desencriptar el mensaje, necesitarás la llave y la imagen adjunta en este correo</p>\r\n" + 
 				"        <p class=\"lead\">\r\n" + 
-				"            <a class=\"btn btn-primary btn-lg\" href=\"https://devlobo.github.io/DevLOBO/Seguridad-Frontend\" role=\"button\">IR AL SISTEMA</a>\r\n" + 
+				"            <a class=\"btn btn-primary btn-lg\" href=\"https://devlobo.github.io/Seguridad-Frontend\" role=\"button\">IR AL SISTEMA</a>\r\n" + 
 				"        </p>\r\n" + 
 				"    </div>\r\n" + 
 				"</div>\r\n" + 
