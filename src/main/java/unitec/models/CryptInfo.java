@@ -22,4 +22,5 @@ public class CryptInfo {
 	private String username;
 	private Long time;
 	private Date date;
+	private String to;
 }
