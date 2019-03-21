@@ -1,0 +1,6 @@
+*.properties
+*.o
+*.jar
+*.property
+*.yml
+*.xml
