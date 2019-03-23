@@ -31,12 +31,16 @@ public class CryptServiceImpl implements CryptService {
 	@Autowired
 	UserService us;
 	
+	@Autowired
+	MessageService ms;
+	
 	@Override
 	public CryptInfo encryptMsg(CryptInfo cryptInfo) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, IOException, AddressException, MessagingException {
 		Date date = new Date(System.currentTimeMillis()  + (cryptInfo.getTime() * 60000));
-		String key = CryptUNITEC.generateKey(),
+		String id = ms.saveMessage(cryptInfo.getUsername(), cryptInfo.getTo()),
+				key = CryptUNITEC.generateKey(),
 				encMsg = CryptUNITEC.encrypt(cryptInfo.getMessage(), key),
-				token = JWTUtils.createWithKeyAndExpirationTime(cryptInfo.getUsername(), key, date);
+				token = JWTUtils.createWithKeyAndExpirationTimeAndMessage(cryptInfo.getUsername(), cryptInfo.getTo(), key, id, date);
 		byte[] img = ImageCreator.createImageRandom(),
 				encImg = ImageCreator.hideText(img, encMsg);
 		encMsg = ImageCreator.encodeImg(encImg);
@@ -52,11 +56,14 @@ public class CryptServiceImpl implements CryptService {
 
 	@Override
 	public CryptInfo decryptMsg(CryptInfo cryptInfo) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException, IOException {
+		String id = JWTUtils.getMessage(cryptInfo.getKey());
+		ms.verifyIssuer(id, cryptInfo.getUsername());
+		
 		byte[] decImg = ImageCreator.decodeImg(cryptInfo.getImage());
 		String key = JWTUtils.getKey(cryptInfo.getKey()),
 				encMsg = ImageCreator.retrieveText(decImg),
 				decMsg = CryptUNITEC.decrypt(encMsg, key),
-				user = JWTUtils.getSubject(cryptInfo.getKey());
+				user = JWTUtils.getIssuer(cryptInfo.getKey());
 		
 		return CryptInfo.builder().message(decMsg).username(user).build();
 	}

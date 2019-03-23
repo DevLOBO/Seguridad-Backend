@@ -27,7 +27,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		System.out.println(username + " intentó autenticarse");
-		return ur.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Usuario " + username + " no encontrado"));
+		return  ur.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Usuario " + username + " no encontrado"));
 	}
 }

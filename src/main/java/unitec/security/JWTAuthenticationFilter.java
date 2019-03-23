@@ -1,6 +1,7 @@
 package unitec.security;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,9 +54,10 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication authResult) throws IOException, ServletException {
+		Date date = new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME);
 		String username = authResult.getName(),
 				roles = new ObjectMapper().writeValueAsString(authResult.getAuthorities()),
-				token = JWTUtils.createWithClaimAndExpirationTime(username, "roles", roles);
+				token = JWTUtils.createWithClaimAndExpirationTime(username, "roles", roles, date);
 		
 		Map<String, Object> res = new HashMap<>();
 		res.put("username", username);

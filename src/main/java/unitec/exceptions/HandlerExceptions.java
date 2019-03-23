@@ -29,6 +29,13 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 
 @RestControllerAdvice
 public class HandlerExceptions extends ResponseEntityExceptionHandler {
+	@ExceptionHandler(IncorrectIssuerException.class)
+	public ResponseEntity<CustomError> handleIncorrectIssuerException(IncorrectIssuerException iie, WebRequest request) {
+		CustomError error = new CustomError(HttpStatus.UNAUTHORIZED, iie.getMessage(),
+				request.getDescription(false));
+		return new ResponseEntity<CustomError>(error, error.getStatus());
+	}
+	
 	@ExceptionHandler(JWTCreationException.class)
 	public ResponseEntity<CustomError> handleJWTCreationException(JWTCreationException jce, WebRequest request) {
 		CustomError error = new CustomError(HttpStatus.INTERNAL_SERVER_ERROR, jce.getLocalizedMessage(),
