@@ -61,6 +61,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		res.put("username", username);
 		res.put("token", token);
 		res.put("logged", true);
+		res.put("roles", roles);
 
 		response.getWriter().write(new ObjectMapper().writeValueAsString(res));
 		response.setStatus(200);

@@ -17,6 +17,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
 import unitec.models.CryptInfo;
+import unitec.models.User;
 import unitec.utils.CryptUNITEC;
 import unitec.utils.EmailUtil;
 import unitec.utils.ImageCreator;
@@ -26,6 +27,9 @@ import unitec.utils.JWTUtils;
 public class CryptServiceImpl implements CryptService {
 	@Autowired
 	JavaMailSenderImpl sender;
+	
+	@Autowired
+	UserService us;
 	
 	@Override
 	public CryptInfo encryptMsg(CryptInfo cryptInfo) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, IOException, AddressException, MessagingException {
@@ -37,8 +41,11 @@ public class CryptServiceImpl implements CryptService {
 				encImg = ImageCreator.hideText(img, encMsg);
 		encMsg = ImageCreator.encodeImg(encImg);
 		
+		String password = Long.toString(System.currentTimeMillis());
+		User user = us.saveUser(cryptInfo.getTo(), password, date);
+		
 		EmailUtil email = new EmailUtil(sender);
-		email.sendEmailWithAttachment(cryptInfo.getTo(), encImg, token, date);
+		email.sendEmailWithAttachment(user.getUsername(), password, encImg, token, date);
 		
 		return CryptInfo.builder().key(token).image(encMsg).date(date).build();
 	}

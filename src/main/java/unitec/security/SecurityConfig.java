@@ -2,6 +2,7 @@ package unitec.security;
 
 import java.util.Arrays;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -15,14 +16,18 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import unitec.services.UserServiceImpl;
+
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+	@Autowired
+	UserServiceImpl userService;
+	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-	
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		final CorsConfiguration configuration = new CorsConfiguration();
@@ -38,14 +43,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(userService);
 		auth.inMemoryAuthentication()
-			.withUser("user1")
-			.password(passwordEncoder().encode("user1"))
-			.authorities("USER")
+			.withUser("admin")
+			.password(passwordEncoder().encode("admin"))
+			.authorities("ENCRYPTER", "DECRYPTER")
 		.and()
-			.withUser("user2")
-			.password(passwordEncoder().encode("user2"))
-			.authorities("USER");
+			.withUser("user")
+			.password(passwordEncoder().encode("user"))
+			.authorities("ENCRYPTER");
 	}
 
 	@Override

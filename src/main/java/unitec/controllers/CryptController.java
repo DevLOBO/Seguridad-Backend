@@ -22,17 +22,18 @@ import unitec.models.CryptInfo;
 import unitec.services.CryptService;
 
 @RestController
-@PreAuthorize("hasAuthority('USER')")
 @RequestMapping("/")
 public class CryptController {
 	@Autowired
 	CryptService cs;
 	
+	@PreAuthorize("hasAuthority('ENCRYPTER')")
 	@PostMapping("/encrypt")
 	public CryptInfo encryptMessage(@RequestBody CryptInfo cryptInfo) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, IOException, AddressException, MessagingException {
 		return cs.encryptMsg(cryptInfo);
 	}
 	
+	@PreAuthorize("hasAuthority('DECRYPT')")
 	@PostMapping("/decrypt")
 	public CryptInfo decryptMessage(@RequestBody CryptInfo cryptInfo) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException, IOException {
 		return cs.decryptMsg(cryptInfo);
