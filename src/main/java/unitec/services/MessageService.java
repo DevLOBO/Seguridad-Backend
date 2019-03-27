@@ -1,8 +1,8 @@
 package unitec.services;
 
-import unitec.exceptions.IncorrectIssuerException;
+import unitec.exceptions.IncorrectAudienceException;
 
 public interface MessageService {
 	String saveMessage(String issuer, String audience);
-	void verifyIssuer(String id, String issuer) throws IncorrectIssuerException;
+	void verifyAudience(String id, String issuer) throws Exception, IncorrectAudienceException;
 }

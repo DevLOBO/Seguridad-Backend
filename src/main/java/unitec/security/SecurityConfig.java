@@ -45,12 +45,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userService);
 		auth.inMemoryAuthentication()
-			.withUser("admin")
-			.password(passwordEncoder().encode("admin"))
-			.authorities("ENCRYPTER", "DECRYPTER")
+			.withUser("decrypter")
+			.password(passwordEncoder().encode("12345"))
+			.authorities("DECRYPTER")
 		.and()
-			.withUser("user")
-			.password(passwordEncoder().encode("user"))
+			.withUser("encrypter")
+			.password(passwordEncoder().encode("12345"))
 			.authorities("ENCRYPTER");
 	}
 

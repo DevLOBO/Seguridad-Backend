@@ -1,7 +1,6 @@
 package unitec.services;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
@@ -16,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
+import unitec.exceptions.IncorrectAudienceException;
 import unitec.models.CryptInfo;
 import unitec.models.User;
 import unitec.utils.CryptUNITEC;
@@ -55,9 +55,9 @@ public class CryptServiceImpl implements CryptService {
 	}
 
 	@Override
-	public CryptInfo decryptMsg(CryptInfo cryptInfo) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException, IOException {
+	public CryptInfo decryptMsg(CryptInfo cryptInfo) throws Exception, IncorrectAudienceException, Exception {
 		String id = JWTUtils.getMessage(cryptInfo.getKey());
-		ms.verifyIssuer(id, cryptInfo.getUsername());
+		ms.verifyAudience(id, cryptInfo.getUsername());
 		
 		byte[] decImg = ImageCreator.decodeImg(cryptInfo.getImage());
 		String key = JWTUtils.getKey(cryptInfo.getKey()),

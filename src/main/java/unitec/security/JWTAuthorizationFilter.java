@@ -56,8 +56,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 				roles = Collections.emptyList();
 			}
 			
-			System.out.println(username + " es el usuario autorizado");
-			
 			if (username != null)
 				return new UsernamePasswordAuthenticationToken(username, null, roles);
 			

@@ -11,9 +11,10 @@ import javax.crypto.NoSuchPaddingException;
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 
+import unitec.exceptions.IncorrectAudienceException;
 import unitec.models.CryptInfo;
 
 public interface CryptService {
 	CryptInfo encryptMsg(CryptInfo cryptInfo) throws AddressException, MessagingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, IOException;
-	CryptInfo decryptMsg(CryptInfo cryptInfo) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException, IOException;
+	CryptInfo decryptMsg(CryptInfo cryptInfo) throws IncorrectAudienceException, Exception, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException, IOException;
 }

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import unitec.exceptions.IncorrectAudienceException;
 import unitec.models.CryptInfo;
 import unitec.services.CryptService;
 
@@ -30,13 +31,12 @@ public class CryptController {
 	@PreAuthorize("hasAuthority('ENCRYPTER')")
 	@PostMapping("/encrypt")
 	public CryptInfo encryptMessage(@RequestBody CryptInfo cryptInfo) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, IOException, AddressException, MessagingException {
-		System.out.println("Autorizado");
 		return cs.encryptMsg(cryptInfo);
 	}
 	
 	@PreAuthorize("hasAuthority('DECRYPTER')")
 	@PostMapping("/decrypt")
-	public CryptInfo decryptMessage(@RequestBody CryptInfo cryptInfo) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException, IOException {
+	public CryptInfo decryptMessage(@RequestBody CryptInfo cryptInfo) throws Exception, IncorrectAudienceException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException, IOException {
 		return cs.decryptMsg(cryptInfo);
 	}
 }

@@ -3,7 +3,7 @@ package unitec.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import unitec.exceptions.IncorrectIssuerException;
+import unitec.exceptions.IncorrectAudienceException;
 import unitec.models.Message;
 import unitec.repositories.MessageRepository;
 
@@ -19,10 +19,10 @@ public class MessageServiceImpl implements MessageService {
 	}
 
 	@Override
-	public void verifyIssuer(String id, String issuer) throws IncorrectIssuerException {
-		Message msg = mr.findById(id).orElseThrow(() -> new RuntimeException("Not exist the message"));
+	public void verifyAudience(String id, String audience) throws Exception, IncorrectAudienceException {
+		Message msg = mr.findById(id).orElseThrow(() -> new Exception("Not exist the message"));
 		
-		if (msg.getIssuer().equals(issuer))
-			throw new IncorrectIssuerException("Username " + issuer + " is not the original issuer");
+		if (!msg.getAudience().equals(audience))
+			throw new IncorrectAudienceException("Username " + audience + " is not the original target user");
 	}
 }

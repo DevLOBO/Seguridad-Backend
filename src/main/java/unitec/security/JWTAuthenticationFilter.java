@@ -64,6 +64,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		res.put("token", token);
 		res.put("logged", true);
 		res.put("roles", roles);
+		res.put("expiration", date);
 
 		response.getWriter().write(new ObjectMapper().writeValueAsString(res));
 		response.setStatus(200);
@@ -76,7 +77,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			AuthenticationException failed) throws IOException, ServletException {
 		Map<String, Object> res = new HashMap<>();
 		res.put("logged", false);
-		res.put("error", "Username and/or password invalid");
+		res.put("error", failed.getMessage());
 		
 		response.getWriter().write(new ObjectMapper().writeValueAsString(res));
 		response.setStatus(401);
